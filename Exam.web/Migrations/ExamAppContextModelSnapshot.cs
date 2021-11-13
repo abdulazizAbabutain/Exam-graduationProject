@@ -16,71 +16,173 @@ namespace Exam.web.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.9")
+                .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Exam.web.Entities.ExamFile", b =>
+            modelBuilder.Entity("Exam.web.Entities.AnswerSheet", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasColumnName("AnswerSheet_Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("Answer")
+                        .HasColumnType("int");
 
-                    b.Property<byte[]>("DataFiles")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<int>("CorrectAnswer")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("QueastionId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Extension")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("QuestionId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("FileType")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UploadedBy")
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AnswerSheets");
+                });
+
+            modelBuilder.Entity("Exam.web.Entities.Department", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Department_Id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExamFile");
+                    b.ToTable("Departments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Value = "computer science"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Value = "information technology"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Value = "information system"
+                        });
+                });
+
+            modelBuilder.Entity("Exam.web.Entities.Questions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Question_Id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Option1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Option2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Option3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Option4")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Question")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("correctAnswer")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("Exam.web.Entities.Room", b =>
                 {
-                    b.Property<Guid>("RoomId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasColumnName("Room_Id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Department")
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Class")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ExamPaperId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("ExamDateAndTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("RoomOwnerId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("RoomId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("ExamPaperId");
+                    b.HasIndex("ApplicationUserId");
 
-                    b.HasIndex("RoomOwnerId");
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("Rooms");
                 });
@@ -291,52 +393,90 @@ namespace Exam.web.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<int>("Departments")
+                    b.Property<long>("AcadmicNumber")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Gender")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("RoomId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("PhotoPath")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("RoomId");
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasIndex("DepartmentId");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = "4fca189b-42aa-4eed-8630-8c6271a7f31b",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "952e1a6d-178d-46ae-a357-b200fd3f7d6b",
-                            Email = "k.k.m1432@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PasswordHash = "123",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "44892566-a096-4e6f-9b70-ef1b02c365c9",
-                            TwoFactorEnabled = false,
-                            Departments = 0
-                        });
+            modelBuilder.Entity("Exam.web.Entities.AnswerSheet", b =>
+                {
+                    b.HasOne("Exam.web.Entities.Questions", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId");
+
+                    b.HasOne("Exam.web.Entities.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Exam.web.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Question");
+
+                    b.Navigation("Room");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Exam.web.Entities.Questions", b =>
+                {
+                    b.HasOne("Exam.web.Entities.Room", "Room")
+                        .WithMany("Questions")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("Exam.web.Entities.Room", b =>
                 {
-                    b.HasOne("Exam.web.Entities.ExamFile", "ExamPaper")
+                    b.HasOne("Exam.web.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany("Rooms")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("Exam.web.Entities.Department", "Department")
                         .WithMany()
-                        .HasForeignKey("ExamPaperId");
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Exam.web.Entities.ApplicationUser", "RoomOwner")
-                        .WithMany()
-                        .HasForeignKey("RoomOwnerId");
+                    b.Navigation("ApplicationUser");
 
-                    b.Navigation("ExamPaper");
-
-                    b.Navigation("RoomOwner");
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -392,14 +532,23 @@ namespace Exam.web.Migrations
 
             modelBuilder.Entity("Exam.web.Entities.ApplicationUser", b =>
                 {
-                    b.HasOne("Exam.web.Entities.Room", null)
-                        .WithMany("Users")
-                        .HasForeignKey("RoomId");
+                    b.HasOne("Exam.web.Entities.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("Exam.web.Entities.Room", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("Exam.web.Entities.ApplicationUser", b =>
+                {
+                    b.Navigation("Rooms");
                 });
 #pragma warning restore 612, 618
         }

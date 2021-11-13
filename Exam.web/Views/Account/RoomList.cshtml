@@ -1,0 +1,74 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h1>Room List</h1>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Class</th>
+            <th>Department</th>
+            <th>Subject</th>
+
+            <th>Delete</th>
+            <th>Details</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int index = 1;
+        }
+        @foreach (var room in Model.Rooms)
+        {
+            <tr>
+                @{
+                    <td>@index</td>
+                    index++;
+                }
+                <td>@room.Title</td>
+                <td>@room.Class</td>
+                <td>
+                    @switch (room.DepartmentId)
+                    {
+
+                        case 1:
+                            <text>Computer Science</text>
+                            break;
+                        case 2:
+                            <text>Information Technology</text>
+                            break;
+                        case 3:
+                            <text>Information System</text>
+                            break;
+                    }
+
+                </td>
+                <td>@room.Subject</td>
+                <td>
+                    <a asp-controller="Room" asp-action="DeleteRoom" asp-route-id="@room.Id" class="btn btn-danger">
+                        Delete
+                    </a>
+
+                </td>
+                <td>
+                    <a asp-controller="Room" asp-action="RoomDetails" asp-route-id="@room.Id" class="btn btn-info">
+                        Details
+                    </a>
+                </td>
+                <td>
+                    <a asp-controller="Room" asp-action="RoomEdit" asp-route-id="@room.Id" class="btn btn-info">
+                        Edit
+                    </a>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>

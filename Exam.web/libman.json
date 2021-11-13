@@ -6,5 +6,10 @@
       "library": "tailwindcss@2.2.8",
       "destination": "wwwroot/lib/tailwindcss/"
     }
-  ]
+  ,
+{
+  "library": "webrtc-adapter@8.1.0",
+  "destination": "wwwroot/lib/webrtc-adapter/"
+}
+]
 }

@@ -1,6 +1,8 @@
-﻿using Exam.web.Entities;
+﻿using AutoMapper;
+using Exam.web.Entities;
 using Exam.web.Services;
-using Exam.web.ViewModels.RoomViewModel;
+using Exam.web.ViewModels.Question;
+using Exam.web.ViewModels.Room;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,26 +17,30 @@ namespace Exam.web.Controllers
 {
     public class RoomController : Controller
     {
-        private readonly IRoomRepository _roomRepository;
-        private readonly UserRepository _userRepository;
+        private readonly IAppRepository _AppRepository;
+
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IMapper _mapper;
 
-        public RoomController(IRoomRepository roomRepository, UserRepository userRepository, SignInManager<ApplicationUser> signInManager)
+        public RoomController(IAppRepository roomRepository,
+            SignInManager<ApplicationUser> signInManager,
+            IMapper mapper)
         {
-            _roomRepository = roomRepository ?? throw new ArgumentNullException(nameof(roomRepository));
-            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
+            _AppRepository = roomRepository ??
+                throw new ArgumentNullException(nameof(roomRepository));
+            _signInManager = signInManager ??
+                throw new ArgumentNullException(nameof(signInManager));
+            _mapper = mapper ??
+                throw new ArgumentNullException(nameof(mapper));
         }
-
-
         [HttpGet]
         [Authorize]
         public IActionResult List()
         {
-            
-            var roomFromRepo = new ListRoomViewModel();
-            roomFromRepo.Rooms = _roomRepository.AllRooms;
-            return View(roomFromRepo);
+            var roomsFromRepo = _AppRepository.AllRooms;
+            var model = new ListRoomViewModel();
+            model.Rooms = _mapper.Map<List<RoomViewModel>>(roomsFromRepo);
+            return View(model);
         }
         [HttpGet]
         [Authorize]
@@ -46,65 +52,125 @@ namespace Exam.web.Controllers
         [Authorize]
         public IActionResult CreatRoom(CreateRoomViewModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var roomOwner = _userRepository.GetUser(model.RoomOwner);
-                if(roomOwner == null)
+                var userFromRepo = _AppRepository.GetUserByUserName(model.UserName);
+                if (userFromRepo == null)
                 {
-                    throw new ArgumentNullException(nameof(roomOwner));
+                    return View();
+
                 }
-                var room = new Room
-                {
-                    RoomId = Guid.NewGuid(),
-                    Title = model.Title,
-                    Department = model.Department,
-                    Description = model.Description,
-                    RoomOwner = roomOwner,
-                    UserId = roomOwner.Id
-                };
-                _roomRepository.AddRoom(room);
-                _roomRepository.save();
-                TempData["Message"] = $"Room {room.RoomId} Created Successfully";
+                var roomFromEntity = _mapper.Map<Entities.Room>(model);
+                roomFromEntity.ApplicationUserId = userFromRepo.Id;
+                _AppRepository.AddRoom(roomFromEntity);
+                _AppRepository.save();
                 return RedirectToAction("index", "home");
             }
             return View(model);
         }
-        [Authorize]
-        public IActionResult ExamRoom(Guid id)
-        {
-            if (id == Guid.Empty)
-                throw new ArgumentNullException(nameof(id));
 
-            var roomFromRepo = _roomRepository.GetRoom(id);
-            var user = _userRepository.GetUser(User.Identity.Name);
-            roomFromRepo.Users.Add(user);
-            return View(roomFromRepo);
-        }
-
-        public IActionResult DeleteRoom(Guid id)
+        [HttpGet]
+        public IActionResult ExamRoom(int id, string UserName)
         {
-            if (id == Guid.Empty)
-                throw new ArgumentNullException(nameof(id));
-            var roomFromRepo = _roomRepository.GetRoom(id);
-            _roomRepository.DeleteRoom(roomFromRepo);
-            _roomRepository.save();
-            return RedirectToAction("List", "Room");
+
+            if (_AppRepository.CheckUserTakeTheExam(id, UserName))
+                return RedirectToAction("Index", "Home");
+            var roomFromRepo = _AppRepository.GetRoom(id);
+            var model = new ExamRoomViewModel();
+            model.Room = _mapper.Map<RoomViewModel>(roomFromRepo);
+            var listOfQuestion = _AppRepository.GetQuestionsByRoomId(roomFromRepo.Id);
+            if (listOfQuestion == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            model.Questions = listOfQuestion;
+            var answerSheetModel = new List<AnswerSheet>();
+            for (int i = 0; i < listOfQuestion.Count; i++)
+            {
+                answerSheetModel.Add(new AnswerSheet
+                {
+                    QueastionId = listOfQuestion[i].Id
+                });
+            }
+            model.AnswerSheets = answerSheetModel;
+
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveRecoredFile()
+        public IActionResult ExamRoom(ExamRoomViewModel model)
         {
-            if (Request.Form.Files.Any())
+            var user = _AppRepository.GetUserByUserName(model.UserName);
+            foreach (var item in model.AnswerSheets)
             {
-                var file = Request.Form.Files["video-blob"];
-                string UploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedFiles");
-                string UniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName + ".webm";
-                string UploadPath = Path.Combine(UploadFolder, UniqueFileName);
-                await file.CopyToAsync(new FileStream(UploadPath, FileMode.Create));
+                _AppRepository.AddAnswer(
+                        answer: item.Answer,
+                        roomId: item.RoomId,
+                        userId: user.Id,
+                        queationId: item.QueastionId,
+                        correctAnswer: item.CorrectAnswer
+                    );
             }
-            return Json(HttpStatusCode.OK);
+            _AppRepository.save();
+            return RedirectToAction("Index", "Home");
+        }
+        /// <summary>
+        /// soft delete the room 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IActionResult DeleteRoom(int id)
+        {
+            var roomFromRepo = _AppRepository.GetRoom(id);
+            if (roomFromRepo == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            _AppRepository.DeleteRoom(roomFromRepo);
+            _AppRepository.save();
+            var userFromRepo = _AppRepository.GetUserById(roomFromRepo.ApplicationUserId);
+            return RedirectToAction("RoomList", "Account", new { UserName = userFromRepo.UserName });
         }
 
 
+        [HttpGet]
+        public IActionResult RoomDetails(int id)
+        {
+            var roomFromRepo = _AppRepository.GetRoom(id);
+
+            var model = _mapper.Map<RoomDetailsViewModel>(roomFromRepo);
+
+            model.User = _AppRepository.GetUserById(roomFromRepo.ApplicationUserId);
+            var questions = _AppRepository.GetQuestionsByRoomId(id);
+            model.Questions = questions;
+            return View(model);
+        }
+        [HttpGet]
+        public IActionResult RoomEdit(int id)
+        {
+            var roomFromrepo = _AppRepository.GetRoom(id);
+            var model = _mapper.Map<EditRoomViewModel>(roomFromrepo);
+            return View(model);
+        }
+        [HttpPost]
+        public IActionResult RoomEdit(EditRoomViewModel model)
+        {
+            var roomFromEntity = _mapper.Map<Room>(model);
+            _AppRepository.RoomUpdate(roomFromEntity);
+            _AppRepository.save();
+            return RedirectToAction("List", "Room");
+        }
+        [HttpGet]
+        public IActionResult ShowResult(int id, string UserName)
+        {
+            var model = new ShowReultsViewModel();
+            var userFromRepo = _AppRepository.GetUserByUserName(UserName);
+            model.AnswerSheets = _AppRepository.GetAnswerSheet(id, userFromRepo.Id);
+            foreach (var answer in model.AnswerSheets)
+            {
+                answer.Question = _AppRepository.GetQuestionById(answer.QueastionId);
+            }
+            return View(model);
+        }
     }
 }

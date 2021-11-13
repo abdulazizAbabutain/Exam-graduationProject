@@ -1,0 +1,145 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model RoomDetailsViewModel
+<h1>Room Details</h1>
+<hr class="solid">
+<dl class="row">
+    <dt class="col-sm-3">
+        Room Id
+    </dt>
+    <dd class="col-sm-9">
+        @Model.Id
+    </dd>
+    <dt class="col-sm-3">
+        Room Title
+    </dt>
+    <dd class="col-sm-9">
+        @Model.Title
+    </dd>
+
+    <dt class="col-sm-3">
+        Room Description
+    </dt>
+    <dd class="col-sm-9">
+        @Model.Description
+    </dd>
+
+    <dt class="col-sm-3">
+        Room Department
+    </dt>
+    <dd class="col-sm-9">
+        @switch (Model.DepartmentId)
+        {
+            case 1:
+                <text>Computer Science</text>
+                break;
+            case 2:
+                <text>Information Technology</text>
+                break;
+            case 3:
+                <text>Information System</text>
+                break;
+        }
+    </dd>
+
+
+    <dt class="col-sm-3 text-truncate">Made By</dt>
+    <dd class="col-sm-9">@Model.User.FirstName @Model.User.LastName</dd>
+</dl>
+
+
+
+<a asp-controller="Question" asp-action="AddQuestion" asp-route-Id="@Model.Id" class="btn btn-primary">
+    Add Question
+</a>
+
+<hr class="solid">
+<h1> Questions List </h1>
+@if (Model.Questions.Count != 0)
+{
+    <text>Total number of questions @Model.Questions.Count </text>
+}
+@if (Model.Questions.Count == 0)
+{
+    <text>there is no question been added </text>
+}
+else
+{
+
+
+    @foreach (var question in Model.Questions)
+    {
+        <div class="card w-75">
+            <div class="card-header">
+                <div class="card-title">
+                    <strong>Question</strong>
+                    @question.Question
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-text">
+                    <div>
+                        <strong>
+                            option 1 :
+                        </strong>
+                        @question.Option1
+                    </div>
+                    <div>
+                        <strong>
+                            option 2 :
+                        </strong>
+                        @question.Option2
+                    </div>
+                    <div>
+                        <strong>
+                            option 3 :
+                        </strong>
+                        @question.Option3
+                    </div>
+                    <div>
+                        <strong>
+                            option 4 :
+                        </strong>
+                        @question.Option4
+                    </div>
+                    <div>
+                        <strong>
+                            The correct option:
+                        </strong>
+                        @switch (question.correctAnswer)
+                        {
+                            case 1:
+                                <text> @question.Option1 </text>
+                                break;
+                            case 2:
+                                <text> @question.Option2 </text>
+                                break;
+                            case 3:
+                                <text> @question.Option3 </text>
+                                break;
+                            case 4:
+                                <text> @question.Option4 </text>
+                                break;
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+
+                <a asp-controller="Question" asp-action="DeleteQuestion" asp-route-id="@question.Id" class="btn btn-danger">
+                    Delete
+                </a>
+
+                <a asp-controller="Question" asp-action="EditQuestion" asp-route-id="@question.Id" class="btn btn-primary">
+                    Edit
+                </a>
+
+            </div>
+        </div>
+        <br />
+
+    }
+}

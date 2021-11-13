@@ -1,5 +1,6 @@
 ﻿@inject SignInManager<ApplicationUser> signInManager
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,14 +33,25 @@
                         var sginin = signInManager.IsSignedIn(User);
                         if (sginin)
                         {
-                            <li class="nav-item">
-                                <form method="post" asp-action="logout" asp-controller="account">
-                                    <button type="submit" class="nav-link btn btn-link py-0">
-                                        logout @User.Identity.Name
-                                    </button>
-                                </form>
-                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"> @User.Identity.Name </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" asp-action="Edit" asp-controller="Account" asp-route-UserName="@User.Identity.Name">
+                                        Edit Account
+                                    </a>
+                                    <a class="dropdown-item" asp-controller="Account" asp-action="RoomList" asp-route-UserName="@User.Identity.Name">
+                                        Created Rooms
+                                    </a>
 
+
+                                    <form class="dropdown-item" method="post" asp-action="logout" asp-controller="account">
+                                        <button type="submit" class="nav-link btn btn-link py-0">
+                                            logout @User.Identity.Name
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </li>
                         }
                         else
                         {
@@ -73,7 +85,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <link rel="stylesheet" href="~/css/Video.css" />
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-    <script src="~/js/Video.js" asp-append-version="true" async></script>
+
     @if (IsSectionDefined("Scripts"))
     {
         @RenderSection("Scripts", required: true)

@@ -10,18 +10,26 @@ namespace Exam.web.DBcontexts
 {
     public class ExamAppContext : IdentityDbContext
     {
-        public ExamAppContext(DbContextOptions options) : base(options)
+        public ExamAppContext(DbContextOptions<ExamAppContext> options) : base(options)
         {
         }
 
-        public DbSet<ApplicationUser> Users { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<AnswerSheet> AnswerSheets { get; set; }
+        public DbSet<Questions> Questions { get; set; }
+        // lockup table
+        public DbSet<Department> Departments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // seed is dummy data that been send to the database
-            modelBuilder.Seed();
+
+            modelBuilder.Entity<Department>().HasData(
+                Department.ComputerScience,
+                Department.InformationTechnology,
+                Department.InformationSystem
+                );
         }
 
     }

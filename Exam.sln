@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31605.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exam.web", "Exam.web\Exam.web.csproj", "{72709E64-6FC4-4F0D-8864-A3B6C72822DB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exam.Test", "Exam.Test\Exam.Test.csproj", "{828CE3A7-8D81-4440-9D40-C970D49C0791}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exam.web", "Exam.web\Exam.web.csproj", "{72709E64-6FC4-4F0D-8864-A3B6C72822DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +15,6 @@ Global
 		{72709E64-6FC4-4F0D-8864-A3B6C72822DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72709E64-6FC4-4F0D-8864-A3B6C72822DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72709E64-6FC4-4F0D-8864-A3B6C72822DB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{828CE3A7-8D81-4440-9D40-C970D49C0791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{828CE3A7-8D81-4440-9D40-C970D49C0791}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{828CE3A7-8D81-4440-9D40-C970D49C0791}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{828CE3A7-8D81-4440-9D40-C970D49C0791}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

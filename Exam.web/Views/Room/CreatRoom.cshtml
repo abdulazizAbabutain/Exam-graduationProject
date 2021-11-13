@@ -15,31 +15,41 @@
 
             <div class="form-group">
                 <label asp-for="Description"></label>
-                <input asp-for="Description" class="form-control" />
+                <textarea asp-for="Description" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Department" class="control-label"></label>
-                <select asp-for="Department"
-                        class="form-control"
-                        asp-items="Html.GetEnumSelectList<Department>()">
+                <label asp-for="DepartmentId" class="control-label"></label>
+                <select asp-for="DepartmentId" class="form-control">
                     <option>Select type ...</option>
+                    <option value="1">Computer Science</option>
+                    <option value="2">Information Technology</option>
+                    <option value="3">Information System</option>
                 </select>
-                <span asp-validation-for="Department" class="text-danger"></span>
+                <span asp-validation-for="DepartmentId" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <div class="custom-file">
-                    <input asp-for="ExamPaper" class="form-control custom-file-input" />
-                    <label asp-for="ExamPaper" class="form-control custom-file-label">chose file...</label>
-                </div>
+                <label asp-for="Class"></label>
+                <input asp-for="Class" class="form-control" />
+                <span asp-validation-for="Class" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExamDateAndTime"></label>
+                <input asp-for="ExamDateAndTime" class="form-control" />
+                <span asp-validation-for="ExamDateAndTime" class="text-danger"></span>
             </div>
 
-            <input type="hidden" asp-for="RoomOwner" value="@User.Identity.Name" />
+            <div class="form-group">
+                <label asp-for="Subject"></label>
+                <input asp-for="Subject" class="form-control" />
+                <span asp-validation-for="Subject" class="text-danger"></span>
+            </div>
+
+            <input type="hidden" asp-for="UserName" value="@User.Identity.Name" />
 
             <button type="submit" class="btn btn-primary">submit</button>
         </form>
-
     </div>
 </div>

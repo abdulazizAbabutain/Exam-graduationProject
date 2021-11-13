@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace Exam.web
 {
@@ -28,13 +29,30 @@ namespace Exam.web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IRoomRepository, RoomRepository>();
-            services.AddScoped<UserRepository, UserRepository>();
+            // add services to the application 
+            services.AddScoped<IAppRepository, AppRepository>();
             services.AddControllersWithViews();
+            // enable auto mapper 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            // make a connection to the database
             services.AddDbContext<ExamAppContext>(option =>
-            option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ExamAppContext>();
+                option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            // add identity to the database 
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ExamAppContext>();
+            // enable session
             services.AddSession();
+            // change the password requirement 
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Default Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 1;
+                options.Password.RequiredUniqueChars = 1;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,18 +70,15 @@ namespace Exam.web
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
-
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                
+                    name: "Account",
+                    pattern: "{controller}/{action}/{UserName?}");
             });
         }
     }
