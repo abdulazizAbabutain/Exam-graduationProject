@@ -4,14 +4,16 @@ using Exam.web.DBcontexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Exam.web.Migrations
 {
     [DbContext(typeof(ExamAppContext))]
-    partial class ExamAppContextModelSnapshot : ModelSnapshot
+    [Migration("20211120133531_AddPropToExamRoomsextion")]
+    partial class AddPropToExamRoomsextion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -19,7 +19,7 @@ namespace Exam.web.Services
         bool JoinRoom(ApplicationUser user, int roomId);
         ApplicationUser GetRoomOwner(int roomId);
         Room GetRoom(int roomId);
-
+        bool IncreseNumberOfTries(int roomId, string userId);
         void RoomUpdate(Room room);
 
         //          +----------------------------------------------+
@@ -30,17 +30,26 @@ namespace Exam.web.Services
         Questions GetQuestionById(int questionId);
         void DeleteQuestion(Questions question);
         void UpdateQueation(Questions questions);
-        // user services section
+        //          +----------------------------------------------+
+        //          |          User service section            |
+        //          +----------------------------------------------+
         public void AddUser(ApplicationUser user);
         public ApplicationUser GetUserById(string userId);
         public ApplicationUser GetUserByUserName(string userName);
         public void UpdateUser(ApplicationUser user);
         public bool UserExist(string userName);
-        // Answer section 
+        public bool UserExistById(string userId);
+        //          +----------------------------------------------+
+        //          |          Answer service section            |
+        //          +----------------------------------------------+
         public void AddAnswer(int answer, int roomId, string userId, int queationId, int correctAnswer);
         public List<AnswerSheet> GetAnswerSheet(int roomId, string userId);
         public bool CheckUserTakeTheExam(int roomId, string userName);
-        // save the changes to the Database.
+        //          +----------------------------------------------+
+        //          |          Other service section            |
+        //          +----------------------------------------------+
         bool save();
+
+        public void RunPythonScpit();
     }
 }

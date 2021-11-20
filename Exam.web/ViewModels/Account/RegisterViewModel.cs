@@ -1,4 +1,6 @@
-﻿using Exam.web.Entities;
+﻿using Exam.web.CustomValidationAttribute;
+using Exam.web.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,13 +29,19 @@ namespace Exam.web.ViewModels.Account
         [Display(Name = "Conform Password")]
         [Compare("Password", ErrorMessage = "the password are not matched")]
         public string ConformPassword { get; set; }
-        [Required(ErrorMessage = "Academic number is required ")]
         [Display(Name = "Academic number")]
+        [Required(ErrorMessage = "Academic number is required")]
         public uint AcadmicNumber { get; set; }
         [Required(ErrorMessage = "Gender is required")]
         public Gender Gender { get; set; }
         [Required(ErrorMessage = "Department is required")]
         [Display(Name = "Department")]
         public int DepartmentId { get; set; }
+        [Required(ErrorMessage = "the file is required, please select a file")]
+        [DataType(DataType.Upload)]
+        // custom attribute from CustomValidationAttribute
+        [MaxFileSize(5 * 1024 * 1024)]
+        [AllowedExtensions(new string[] { ".jpg", ".png" })]
+        public IFormFile Photo { get; set; }
     }
 }

@@ -4,14 +4,16 @@ using Exam.web.DBcontexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Exam.web.Migrations
 {
     [DbContext(typeof(ExamAppContext))]
-    partial class ExamAppContextModelSnapshot : ModelSnapshot
+    [Migration("20211118095448_v1")]
+    partial class v1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,44 +89,6 @@ namespace Exam.web.Migrations
                             Id = 3,
                             Value = "information system"
                         });
-                });
-
-            modelBuilder.Entity("Exam.web.Entities.ExamRoomSession", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("ExamRoom_Id")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("MaxTries")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumberOfTries")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoomId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UserEntedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("UserExitDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("UserTries")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoomId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ExamRoomSessions");
                 });
 
             modelBuilder.Entity("Exam.web.Entities.Questions", b =>
@@ -223,32 +187,6 @@ namespace Exam.web.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.ToTable("Rooms");
-                });
-
-            modelBuilder.Entity("Exam.web.Entities.UserExamResult", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("UserExamResult_Id")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("RoomId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalPoints")
-                        .HasColumnType("int");
-
-                    b.Property<string>("userId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoomId");
-
-                    b.HasIndex("userId");
-
-                    b.ToTable("UserExamResults");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -515,23 +453,6 @@ namespace Exam.web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Exam.web.Entities.ExamRoomSession", b =>
-                {
-                    b.HasOne("Exam.web.Entities.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Exam.web.Entities.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Room");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Exam.web.Entities.Questions", b =>
                 {
                     b.HasOne("Exam.web.Entities.Room", "Room")
@@ -558,23 +479,6 @@ namespace Exam.web.Migrations
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("Department");
-                });
-
-            modelBuilder.Entity("Exam.web.Entities.UserExamResult", b =>
-                {
-                    b.HasOne("Exam.web.Entities.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Exam.web.Entities.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("userId");
-
-                    b.Navigation("Room");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

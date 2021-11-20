@@ -17,6 +17,8 @@ namespace Exam.web.DBcontexts
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<AnswerSheet> AnswerSheets { get; set; }
+        public DbSet<ExamRoomSession> ExamRoomSessions { get; set; }
+        public DbSet<UserExamResult> UserExamResults { get; set; }
         public DbSet<Questions> Questions { get; set; }
         // lockup table
         public DbSet<Department> Departments { get; set; }

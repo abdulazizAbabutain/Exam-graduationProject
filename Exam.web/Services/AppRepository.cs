@@ -3,6 +3,8 @@ using Exam.web.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -135,6 +137,14 @@ namespace Exam.web.Services
                 .Where(a => a.IsDeleted == false)
                 .Any(a => a.UserName == userName);
         }
+        public bool UserExistById(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+                throw new ArgumentNullException(nameof(userId));
+            return _appContext.ApplicationUsers
+                .Where(a => a.IsDeleted == false)
+                .Any(a => a.Id == userId);
+        }
         /// <summary>
         /// save all the changes that happened in the context to the database
         /// </summary>
@@ -236,6 +246,46 @@ namespace Exam.web.Services
             return _appContext.AnswerSheets
                 .Where(a => a.UserId == userFromDB.Id && a.RoomId == roomId)
                 .Any();
+        }
+
+
+        public void RunPythonScpit()
+        {
+            var start = new ProcessStartInfo();
+            start.FileName = "C:\\Users\\hp-pc\\AppData\\Local\\Programs\\Python\\Python37-32\\python.exe";//cmd is full path to python.exe
+            start.Arguments = "C:\\Workspace\\Python\\GP_env\\PythonScripts\\Lap.py";//args is path to .py file and any cmd line args
+            start.UseShellExecute = false;
+            start.RedirectStandardOutput = true;
+            start.RedirectStandardError = true;
+            start.CreateNoWindow = true;
+
+            var errors = "";
+            var results = "";
+            using (var process = Process.Start(start))
+            {
+                errors = process.StandardError.ReadToEnd();
+                results = process.StandardOutput.ReadToEnd();
+            }
+            Console.WriteLine("Errors");
+            Console.WriteLine(errors);
+            Console.WriteLine();
+            Console.WriteLine("results");
+            Console.WriteLine(results);
+        }
+
+        public bool IncreseNumberOfTries(int roomId, string userId)
+        {
+            if (!RoomExist(roomId))
+                throw new ArgumentNullException(nameof(roomId));
+            if (!UserExistById(userId))
+                throw new ArgumentNullException(nameof(userId));
+            var examRoomSessionFromDB = _appContext.ExamRoomSessions
+                .FirstOrDefault(a => a.RoomId == roomId && a.UserId == userId);
+            examRoomSessionFromDB.UserTries++;
+            if (examRoomSessionFromDB.UserTries >= examRoomSessionFromDB.NumberOfTries)
+                return false;
+            _appContext.ExamRoomSessions.Update(examRoomSessionFromDB);
+            return true;
         }
     }
 }

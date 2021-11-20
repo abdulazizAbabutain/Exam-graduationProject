@@ -4,14 +4,16 @@ using Exam.web.DBcontexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Exam.web.Migrations
 {
     [DbContext(typeof(ExamAppContext))]
-    partial class ExamAppContextModelSnapshot : ModelSnapshot
+    [Migration("20211118095706_add_tabels_UserExamResult_and_RoomExamSession")]
+    partial class add_tabels_UserExamResult_and_RoomExamSession
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,12 +107,6 @@ namespace Exam.web.Migrations
 
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("UserEntedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("UserExitDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");

@@ -72,9 +72,14 @@ namespace Exam.web.Controllers
         [HttpGet]
         public IActionResult ExamRoom(int id, string UserName)
         {
-
-            if (_AppRepository.CheckUserTakeTheExam(id, UserName))
+            var userFromRepo = _AppRepository.GetUserByUserName(UserName);
+            if (!_AppRepository.IncreseNumberOfTries(id, userFromRepo.Id))
+            {
                 return RedirectToAction("Index", "Home");
+
+            }
+            /* if (_AppRepository.CheckUserTakeTheExam(id, UserName))
+                 return RedirectToAction("Index", "Home");*/
             var roomFromRepo = _AppRepository.GetRoom(id);
             var model = new ExamRoomViewModel();
             model.Room = _mapper.Map<RoomViewModel>(roomFromRepo);
@@ -93,7 +98,7 @@ namespace Exam.web.Controllers
                 });
             }
             model.AnswerSheets = answerSheetModel;
-
+            _AppRepository.save();
             return View(model);
         }
 
